@@ -16,9 +16,10 @@ class App extends Component {
 
   componentDidMount() {
     this.setState({
-      // customers: dataset.customers.map(customer => ({ name: customer.name, products: [] })),
       products: dataset.items.map(product => ({
         id: product.id,
+        price: product.price,
+        count: product.count,
         customers: dataset.customers.map(customer => ({ name: customer.name, checked: false }))
       }))
     });
@@ -51,8 +52,19 @@ class App extends Component {
   getPricePerCustomer() {
     const customers = dataset.customers.map(customer => ({ name: customer.name, paying: 0 }));
 
-    // TODO
-    this.state.products.forEach(product => )
+    this.state.products.forEach(product =>
+      product.customers.forEach(customer => {
+        if (customer.checked) {
+          const custIndex = customers.findIndex(item => item.name === customer.name);
+
+          console.log("customers[custIndex]", customers[custIndex]);
+          console.log("product", product);
+          customers[custIndex].paying = customers[custIndex].paying + product.price;
+        }
+      })
+    );
+
+    console.log(customers);
   }
 
   render() {
@@ -78,7 +90,7 @@ class App extends Component {
         <p>Tab total: {this.getTotalTabPrice()}</p>
         <p>PPC: {this.getPricePerCustomer()}</p>
 
-        {JSON.stringify(this.state)}
+        <pre>{JSON.stringify(this.state, null, 2)}</pre>
       </div>
     );
   }
