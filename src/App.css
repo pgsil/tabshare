@@ -4,3 +4,32 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.table-head {
+  background: rgb(75, 75, 75);
+  color: rgb(193, 202, 210);
+  display: flex;
+  color: black;
+  font-weight: bold;
+}
+
+.product-name th {
+  width: 70px;
+  box-sizing: border-box;
+  height: 40px;
+  line-height: 40px;
+}
+
+tr {
+  height: 60px;
+}
+
+.table-cell {
+  width: 100px;
+  height: 40px;
+  padding: 10px 0;
+  box-sizing: border-box;
+  background: rgb(77, 77, 77);
+  text-align: center;
+  display: inline-block;
+}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Row from "./components/Row";
+import CustomerPays from "./components/CustomerPays";
 import dataset from "./data";
 import "./App.css";
 
@@ -18,6 +19,7 @@ class App extends Component {
     this.setState({
       products: dataset.items.map(product => ({
         id: product.id,
+        name: product.name,
         price: product.price,
         count: product.count,
         customers: []
@@ -25,7 +27,7 @@ class App extends Component {
     });
   }
 
-  handleProductSelection({ customerName, productId, value }) {
+  handleProductSelection({ customerName, productId }) {
     const newProductsState = [...this.state.products];
 
     const tgtProductIndex = newProductsState.findIndex(product => product.id === productId);
@@ -62,7 +64,7 @@ class App extends Component {
       })
     );
 
-    return JSON.stringify(allCustomers, null, 0);
+    return allCustomers;
   }
 
   render() {
@@ -70,11 +72,15 @@ class App extends Component {
       <div className="App">
         <table>
           <tbody>
-            <tr>
-              <th>Produto</th>
-              {dataset.customers.map(customer => <th key={customer.name}>{customer.name}</th>)}
-            </tr>
-            {dataset.items.map(product => (
+            <div className="table-head">
+              <div className="table-cell">Produto</div>
+              {dataset.customers.map(customer => (
+                <div className="table-cell" key={customer.name}>
+                  {customer.name}
+                </div>
+              ))}
+            </div>
+            {this.state.products.map(product => (
               <Row
                 key={JSON.stringify(product)}
                 customers={dataset.customers}
@@ -85,8 +91,34 @@ class App extends Component {
           </tbody>
         </table>
 
-        <p>Tab total: {this.getTotalTabPrice()}</p>
-        <pre>PPC: {this.getPricePerCustomer()}</pre>
+        <section className="customer-section">
+          <h2>Price per customer:</h2>
+
+          {this.getPricePerCustomer().map(item => (
+            <CustomerPays key={item.name} customerName={item.name} price={item.paying.toFixed(2)} />
+          ))}
+        </section>
+
+        <section className="tabtotals">
+          <p>
+            <b>
+              Tab total: R${" "}
+              {this.getTotalTabPrice()
+                .toFixed(2)
+                .replace(".", ",")}
+            </b>
+          </p>
+
+          <p>
+            <b>
+              Accounted for: R${" "}
+              {this.getPricePerCustomer()
+                .reduce((acc, val) => acc + val.paying, 0)
+                .toFixed(2)
+                .replace(".", ",")}
+            </b>
+          </p>
+        </section>
 
         {/* <pre>{JSON.stringify(this.state, null, 2)}</pre> */}
       </div>
