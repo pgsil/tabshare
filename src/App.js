@@ -20,7 +20,7 @@ class App extends Component {
         id: product.id,
         price: product.price,
         count: product.count,
-        customers: dataset.customers.map(customer => ({ name: customer.name, checked: false }))
+        customers: []
       }))
     });
   }
@@ -30,13 +30,15 @@ class App extends Component {
 
     const tgtProductIndex = newProductsState.findIndex(product => product.id === productId);
 
-    const tgtCustomerIndex = newProductsState[tgtProductIndex].customers.findIndex(
-      customer => customer.name === customerName
-    );
+    const tgtCustomerIndex = newProductsState[tgtProductIndex].customers.indexOf(customerName);
 
-    const tgtCustomer = newProductsState[tgtProductIndex].customers[tgtCustomerIndex];
+    const customers = newProductsState[tgtProductIndex].customers;
 
-    tgtCustomer.checked = value;
+    if (tgtCustomerIndex >= 0) {
+      customers.splice(tgtCustomerIndex, 1);
+    } else {
+      customers.push(customerName);
+    }
 
     this.setState({ products: newProductsState });
   }
@@ -50,21 +52,17 @@ class App extends Component {
   }
 
   getPricePerCustomer() {
-    const customers = dataset.customers.map(customer => ({ name: customer.name, paying: 0 }));
+    const allCustomers = dataset.customers.map(customer => ({ name: customer.name, paying: 0 }));
 
     this.state.products.forEach(product =>
       product.customers.forEach(customer => {
-        if (customer.checked) {
-          const custIndex = customers.findIndex(item => item.name === customer.name);
+        const custIndex = allCustomers.findIndex(item => item.name === customer);
 
-          console.log("customers[custIndex]", customers[custIndex]);
-          console.log("product", product);
-          customers[custIndex].paying = customers[custIndex].paying + product.price;
-        }
+        allCustomers[custIndex].paying += product.price * product.count / product.customers.length;
       })
     );
 
-    console.log(customers);
+    return JSON.stringify(allCustomers, null, 0);
   }
 
   render() {
@@ -88,9 +86,9 @@ class App extends Component {
         </table>
 
         <p>Tab total: {this.getTotalTabPrice()}</p>
-        <p>PPC: {this.getPricePerCustomer()}</p>
+        <pre>PPC: {this.getPricePerCustomer()}</pre>
 
-        <pre>{JSON.stringify(this.state, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(this.state, null, 2)}</pre> */}
       </div>
     );
   }
