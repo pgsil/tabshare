@@ -1,11 +1,8 @@
 node_modules/
-public/
 .eslintcache
 coverage/
 .nyc_output
 .DS_Store
-public/*bundle*
-public/
 dist/
 *.map
 *.bundle.js
