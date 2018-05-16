@@ -40,13 +40,14 @@ tr {
 }
 
 .table-main {
-  overflow: scroll;
+  overflow-x: auto;
   padding-bottom: 20px;
   padding-left: 10px;
   background: #1a1a1a;
 }
 
 .checkbox-label {
+  cursor: pointer;
   height: 40px;
   width: 40px;
   position: absolute;
@@ -105,4 +106,5 @@ input[type="checkbox"]:checked ~ .checkbox-label:before {
   color: rgb(255, 41, 41);
   outline-color: rgb(255, 41, 41);
   border: none;
+  cursor: pointer;
 }

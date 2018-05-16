@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import Row from "./components/Row";
 import CustomerPays from "./components/CustomerPays";
+import TableHead from "./components/TableHead";
 
 import dataset from "./data";
 
@@ -39,9 +40,9 @@ class App extends Component {
 
     const tgtProductIndex = newProductsState.findIndex(product => product.id === productId);
 
-    const tgtCustomerIndex = newProductsState[tgtProductIndex].customers.indexOf(customerName);
-
     const customers = newProductsState[tgtProductIndex].customers;
+
+    const tgtCustomerIndex = customers.findIndex(customer => customer === customerName);
 
     if (tgtCustomerIndex >= 0) {
       customers.splice(tgtCustomerIndex, 1);
@@ -104,14 +105,8 @@ class App extends Component {
     return (
       <div className="App">
         <div className="table-main">
-          <div className="table-head">
-            <div className="table-cell" />
-            {dataset.customers.map(customer => (
-              <div className="table-cell" key={customer.name}>
-                {customer.name}
-              </div>
-            ))}
-          </div>
+          <TableHead customers={dataset.customers} />
+
           {this.state.products.map(product => (
             <Row
               key={JSON.stringify(product)}
