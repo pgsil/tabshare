@@ -6,4 +6,4 @@ tabshare is a simple proof of concept app that aims to help split a bill between
 
 1. clone the project  
 2. do a `yarn` or `npm install`  
-3. do a `yarn start`
+3. do a `yarn start` or a `npm start`
