@@ -20,13 +20,17 @@ class App extends Component {
 
   componentDidMount() {
     this.setState({
-      products: dataset.items.map(product => ({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        count: product.count,
-        customers: []
-      }))
+      products: dataset.items.map(product => {
+        const { id, name, price, count } = product;
+
+        return {
+          id: id,
+          name: name,
+          price: price,
+          count: count,
+          customers: []
+        };
+      })
     });
   }
 
