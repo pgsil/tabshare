@@ -2,7 +2,7 @@ import React from "react";
 
 const CustomerPays = ({ customerName, price }) => (
   <p>
-    {customerName} pays R$ {price}
+    <b>{customerName}</b> pays R$ <b>{price.replace(".", ",")}</b>
   </p>
 );
 

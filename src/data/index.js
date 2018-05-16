@@ -14,6 +14,12 @@ const data = {
     },
     {
       name: "E"
+    },
+    {
+      name: "F"
+    },
+    {
+      name: "G"
     }
   ],
   items: [

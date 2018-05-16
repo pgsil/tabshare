@@ -2,7 +2,9 @@ import React, { Component } from "react";
 
 import Row from "./components/Row";
 import CustomerPays from "./components/CustomerPays";
+
 import dataset from "./data";
+
 import "./App.css";
 
 class App extends Component {
@@ -11,7 +13,8 @@ class App extends Component {
 
     this.state = {
       customers: [],
-      products: []
+      products: [],
+      tip: false
     };
   }
 
@@ -50,6 +53,10 @@ class App extends Component {
       return acc + val.price * val.count;
     }, 0);
 
+    if (this.state.tip) {
+      return price * 1.1;
+    }
+
     return price;
   }
 
@@ -60,36 +67,56 @@ class App extends Component {
       product.customers.forEach(customer => {
         const custIndex = allCustomers.findIndex(item => item.name === customer);
 
-        allCustomers[custIndex].paying += product.price * product.count / product.customers.length;
+        const productPrice = this.state.tip ? product.price * 1.1 : product.price;
+
+        allCustomers[custIndex].paying += productPrice * product.count / product.customers.length;
       })
     );
 
     return allCustomers;
   }
 
+  getAccountedFor() {
+    return this.getPricePerCustomer()
+      .reduce((acc, val) => acc + val.paying, 0)
+      .toFixed(2)
+      .replace(".", ",");
+  }
+
+  getAccountedForEmojiClass() {
+    const accountedFor = this.getAccountedFor();
+
+    const totalPrice = this.getTotalTabPrice()
+      .toFixed(2)
+      .replace(".", ",");
+
+    if (accountedFor === totalPrice) {
+      return "hidden";
+    }
+    return "";
+  }
+
   render() {
     return (
       <div className="App">
-        <table>
-          <tbody>
-            <div className="table-head">
-              <div className="table-cell">Produto</div>
-              {dataset.customers.map(customer => (
-                <div className="table-cell" key={customer.name}>
-                  {customer.name}
-                </div>
-              ))}
-            </div>
-            {this.state.products.map(product => (
-              <Row
-                key={JSON.stringify(product)}
-                customers={dataset.customers}
-                product={product}
-                handleChange={(...params) => this.handleProductSelection(...params)}
-              />
+        <div className="table-main">
+          <div className="table-head">
+            <div className="table-cell" />
+            {dataset.customers.map(customer => (
+              <div className="table-cell" key={customer.name}>
+                {customer.name}
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+          {this.state.products.map(product => (
+            <Row
+              key={JSON.stringify(product)}
+              customers={dataset.customers}
+              product={product}
+              handleChange={(...params) => this.handleProductSelection(...params)}
+            />
+          ))}
+        </div>
 
         <section className="customer-section">
           <h2>Price per customer:</h2>
@@ -101,26 +128,26 @@ class App extends Component {
 
         <section className="tabtotals">
           <p>
-            <b>
-              Tab total: R${" "}
-              {this.getTotalTabPrice()
-                .toFixed(2)
-                .replace(".", ",")}
-            </b>
+            Tab total: R${" "}
+            {this.getTotalTabPrice()
+              .toFixed(2)
+              .replace(".", ",")}
           </p>
 
           <p>
-            <b>
-              Accounted for: R${" "}
-              {this.getPricePerCustomer()
-                .reduce((acc, val) => acc + val.paying, 0)
-                .toFixed(2)
-                .replace(".", ",")}
-            </b>
+            Accounted for: R$ {this.getAccountedFor()}{" "}
+            <span
+              role="img"
+              aria-label="warning"
+              className={`warning ${this.getAccountedForEmojiClass()}`}>
+              ⚠️
+            </span>
           </p>
-        </section>
 
-        {/* <pre>{JSON.stringify(this.state, null, 2)}</pre> */}
+          <button className="tip-btn" onClick={() => this.setState({ tip: !this.state.tip })}>
+            {this.state.tip ? "Disable 10% tip" : "Enable 10% tip"}
+          </button>
+        </section>
       </div>
     );
   }
